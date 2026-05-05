@@ -1,0 +1,480 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+  .tabs { display: flex; gap: 4px; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 20px; }
+  .tab { padding: 8px 16px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; background: none; color: var(--color-text-secondary); border-bottom: 2px solid transparent; transition: all .15s; }
+  .tab.active { color: var(--color-text-primary); border-bottom-color: var(--color-text-primary); }
+  .tab:hover { color: var(--color-text-primary); }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .section-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; margin-top: 20px; }
+  .section-title:first-child { margin-top: 0; }
+
+  /* Team cards */
+  .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+  .member-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px; }
+  .member-card.leader { border: 1.5px solid var(--color-border-info); }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; margin-bottom: 10px; }
+  .av-teal { background: #E1F5EE; color: #0F6E56; }
+  .av-blue { background: #E6F1FB; color: #185FA5; }
+  .av-amber { background: #FAEEDA; color: #854F0B; }
+  .av-purple { background: #EEEDFE; color: #534AB7; }
+  .av-coral { background: #FAECE7; color: #993C1D; }
+  .av-green { background: #EAF3DE; color: #3B6D11; }
+  .member-name { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .member-role { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+  .member-tasks { margin-top: 10px; border-top: 0.5px solid var(--color-border-tertiary); padding-top: 10px; }
+  .task-tag { display: inline-block; font-size: 11px; background: var(--color-background-secondary); color: var(--color-text-secondary); padding: 2px 8px; border-radius: 10px; margin: 2px 2px 0 0; }
+  .badge { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 10px; display: inline-block; margin-bottom: 4px; }
+  .badge-leader { background: #E6F1FB; color: #185FA5; }
+  .badge-gestao { background: #FAEEDA; color: #854F0B; }
+
+  /* Activity items */
+  .activity-list { display: flex; flex-direction: column; gap: 8px; }
+  .activity-item { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start; cursor: pointer; transition: background .15s; }
+  .activity-item:hover { background: var(--color-background-secondary); }
+  .activity-item.done { border-left: 3px solid #1D9E75; }
+  .activity-item.pending { border-left: 3px solid #BA7517; }
+  .activity-num { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); min-width: 18px; }
+  .activity-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .activity-desc { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; line-height: 1.5; }
+  .activity-meta { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+  .meta-tag { font-size: 11px; color: var(--color-text-tertiary); background: var(--color-background-secondary); padding: 2px 8px; border-radius: 8px; }
+  .expand-icon { font-size: 14px; color: var(--color-text-tertiary); margin-left: auto; flex-shrink: 0; }
+  .sub-items { display: none; margin-top: 10px; border-top: 0.5px solid var(--color-border-tertiary); padding-top: 10px; }
+  .sub-items.open { display: block; }
+  .sub-item { font-size: 12px; color: var(--color-text-secondary); padding: 3px 0; padding-left: 8px; border-left: 2px solid var(--color-border-tertiary); margin-left: 4px; margin-bottom: 2px; line-height: 1.5; }
+
+  /* Data analysis */
+  .data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .stat-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 14px; }
+  .stat-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+  .stat-value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+  .stat-sub { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+
+  .col-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .col-table th { text-align: left; padding: 6px 8px; font-size: 11px; font-weight: 500; color: var(--color-text-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .col-table td { padding: 6px 8px; color: var(--color-text-primary); border-bottom: 0.5px solid var(--color-border-tertiary); vertical-align: top; }
+  .col-table tr:last-child td { border-bottom: none; }
+  .col-table tr:hover td { background: var(--color-background-secondary); }
+  .pill { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 8px; }
+  .pill-ok { background: #EAF3DE; color: #3B6D11; }
+  .pill-warn { background: #FAEEDA; color: #854F0B; }
+  .pill-bad { background: #FCEBEB; color: #A32D2D; }
+  .pill-drop { background: #EEEDFE; color: #534AB7; }
+
+  .bar-wrap { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+  .bar-label { font-size: 12px; color: var(--color-text-secondary); min-width: 80px; }
+  .bar-bg { flex: 1; height: 8px; background: var(--color-background-secondary); border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width .5s; }
+  .bar-val { font-size: 12px; color: var(--color-text-primary); min-width: 40px; text-align: right; }
+
+  .alert-box { background: var(--color-background-warning); border: 0.5px solid var(--color-border-warning); border-radius: var(--border-radius-md); padding: 10px 14px; margin-bottom: 12px; font-size: 13px; color: var(--color-text-warning); }
+  .info-box { background: var(--color-background-info); border: 0.5px solid var(--color-border-info); border-radius: var(--border-radius-md); padding: 10px 14px; margin-bottom: 12px; font-size: 13px; color: var(--color-text-info); }
+
+  .deadline { font-size: 12px; font-weight: 500; color: var(--color-text-danger); }
+</style>
+
+<h2 class="sr-only">Painel do Projeto - Predição do Abandono do Tratamento de Tuberculose</h2>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('team')">Equipe</button>
+  <button class="tab" onclick="showTab('macro1')">Macro 1 — Entendimento</button>
+  <button class="tab" onclick="showTab('macro2')">Macro 2 — Dados</button>
+  <button class="tab" onclick="showTab('data')">Análise da Amostra</button>
+</div>
+
+<!-- TEAM TAB -->
+<div id="tab-team" class="panel active">
+  <p class="section-title">Estrutura do Time — 6 pessoas</p>
+  <div class="info-box">Vinicius (Líder) e Gustavo (Gestão de Projeto) já definidos. Os outros 4 membros precisam ser preenchidos com nomes reais.</div>
+  <div class="team-grid">
+    <div class="member-card leader">
+      <div class="badge badge-leader">Líder</div>
+      <div class="avatar av-teal">VN</div>
+      <div class="member-name">Vinicius</div>
+      <div class="member-role">Líder do Projeto</div>
+      <div class="member-tasks">
+        <div class="task-tag">Coordenação geral</div>
+        <div class="task-tag">Revisão de entregas</div>
+        <div class="task-tag">Relatório científico</div>
+        <div class="task-tag">Introdução + Método</div>
+        <div class="task-tag">Apresentação final</div>
+      </div>
+    </div>
+    <div class="member-card leader">
+      <div class="badge badge-gestao">Gestão</div>
+      <div class="avatar av-amber">GU</div>
+      <div class="member-name">Gustavo</div>
+      <div class="member-role">Gestor de Projeto</div>
+      <div class="member-tasks">
+        <div class="task-tag">Reuniões periódicas</div>
+        <div class="task-tag">Monitoramento</div>
+        <div class="task-tag">Pipeline de dados</div>
+        <div class="task-tag">Treino dos modelos</div>
+        <div class="task-tag">Avaliação dos modelos</div>
+      </div>
+    </div>
+    <div class="member-card">
+      <div class="avatar av-blue">M1</div>
+      <div class="member-name">Membro 3</div>
+      <div class="member-role">Dados & EDA</div>
+      <div class="member-tasks">
+        <div class="task-tag">Dicionário de dados</div>
+        <div class="task-tag">Análise exploratória</div>
+        <div class="task-tag">Qualidade dos dados</div>
+        <div class="task-tag">Documentação Macro 2</div>
+      </div>
+    </div>
+    <div class="member-card">
+      <div class="avatar av-purple">M2</div>
+      <div class="member-name">Membro 4</div>
+      <div class="member-role">Feature Engineering</div>
+      <div class="member-tasks">
+        <div class="task-tag">Tratamento de nulos</div>
+        <div class="task-tag">Codificação categórica</div>
+        <div class="task-tag">Novas variáveis</div>
+        <div class="task-tag">SMOTE / balanceamento</div>
+      </div>
+    </div>
+    <div class="member-card">
+      <div class="avatar av-coral">M3</div>
+      <div class="member-name">Membro 5</div>
+      <div class="member-role">xAI & Explicabilidade</div>
+      <div class="member-tasks">
+        <div class="task-tag">SHAP values</div>
+        <div class="task-tag">Permutation importance</div>
+        <div class="task-tag">Seleção de features</div>
+        <div class="task-tag">Casos extremos</div>
+      </div>
+    </div>
+    <div class="member-card">
+      <div class="avatar av-green">M4</div>
+      <div class="member-name">Membro 6</div>
+      <div class="member-role">Produção & App</div>
+      <div class="member-tasks">
+        <div class="task-tag">API FastAPI</div>
+        <div class="task-tag">Interface Streamlit</div>
+        <div class="task-tag">Logs & Monitoramento</div>
+        <div class="task-tag">GitHub + README</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MACRO 1 TAB -->
+<div id="tab-macro1" class="panel">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <p class="section-title" style="margin:0">Macro 1 — Entendimento do Problema</p>
+    <span style="font-size:12px;font-weight:500;color:#1D9E75;">✓ Concluída em 04/05</span>
+  </div>
+  <div class="info-box">Macro 1 concluída. Entregável gerado: <strong>introducao_relatorio.md</strong> — introdução científica formal em padrão ABNT com contexto epidemiológico, revisão de literatura, definição do problema, hipóteses de variáveis e objetivos do projeto.</div>
+  <div class="activity-list">
+    <div class="activity-item done" onclick="toggle(this)">
+      <div class="activity-num">1.1</div>
+      <div style="flex:1">
+        <div class="activity-title">Levantar conceitos sobre Tuberculose</div>
+        <div class="activity-desc">Definir o que é TB, TB latente vs ativa, sintomas, transmissão e epidemiologia no Brasil.</div>
+        <div class="activity-meta"><span class="meta-tag">Responsável: Vinicius</span><span class="meta-tag">Intro do relatório</span></div>
+        <div class="sub-items">
+          <div class="sub-item">Mycobacterium tuberculosis — morfologia e mecanismo de infecção</div>
+          <div class="sub-item">Diferença entre TB latente e TB ativa (quando ocorre)</div>
+          <div class="sub-item">Principais sintomas: tosse &gt;3 sem, febre baixa, sudorese, perda de peso</div>
+          <div class="sub-item">Transmissão por gotículas e fatores de risco</div>
+          <div class="sub-item">Dados epidemiológicos Brasil (SINAN/SVS): incidência, mortalidade, regiões</div>
+          <div class="sub-item">Comorbidades frequentes: AIDS, diabetes, alcoolismo, uso de drogas</div>
+        </div>
+      </div>
+      <div class="expand-icon">›</div>
+    </div>
+    <div class="activity-item done" onclick="toggle(this)">
+      <div class="activity-num">1.2</div>
+      <div style="flex:1">
+        <div class="activity-title">Analisar o fluxo de tratamento no SUS</div>
+        <div class="activity-desc">Entender o protocolo do tratamento, esquemas medicamentosos e o papel do DOT.</div>
+        <div class="activity-meta"><span class="meta-tag">Responsável: Vinicius</span><span class="meta-tag">Contexto prático</span></div>
+        <div class="sub-items">
+          <div class="sub-item">Esquema básico RHZE: Rifampicina, Isoniazida, Pirazinamida, Etambutol — 6 meses</div>
+          <div class="sub-item">Tratamento Diretamente Observado (DOT/TDO): o que é, como funciona no SUS</div>
+          <div class="sub-item">Fluxo desde notificação (SINAN) até encerramento do caso</div>
+          <div class="sub-item">Categorias de encerramento: cura, abandono, óbito, transferência, TB-DR</div>
+          <div class="sub-item">Por que 6 meses é difícil — aderência e seus determinantes sociais</div>
+        </div>
+      </div>
+      <div class="expand-icon">›</div>
+    </div>
+    <div class="activity-item done" onclick="toggle(this)">
+      <div class="activity-num">1.3</div>
+      <div style="flex:1">
+        <div class="activity-title">Identificar causas do abandono do tratamento</div>
+        <div class="activity-desc">Mapear os fatores clínicos, sociodemográficos e sistêmicos associados ao abandono.</div>
+        <div class="activity-meta"><span class="meta-tag">Responsável: Vinicius</span><span class="meta-tag">Hipóteses iniciais</span></div>
+        <div class="sub-items">
+          <div class="sub-item">Fatores individuais: uso de álcool/drogas, situação de rua, baixa escolaridade</div>
+          <div class="sub-item">Fatores clínicos: efeitos adversos dos medicamentos, HIV+, comorbidades</div>
+          <div class="sub-item">Fatores sistêmicos: distância da UBS, falta de DOT, suporte social insuficiente</div>
+          <div class="sub-item">Taxa nacional de abandono ≈ 10–12% (meta OMS: &lt;5%)</div>
+          <div class="sub-item">Abandono cria risco de TB resistente (MDR-TB, XDR-TB)</div>
+        </div>
+      </div>
+      <div class="expand-icon">›</div>
+    </div>
+    <div class="activity-item done" onclick="toggle(this)">
+      <div class="activity-num">1.4</div>
+      <div style="flex:1">
+        <div class="activity-title">Pesquisar trabalhos relacionados (estado da arte)</div>
+        <div class="activity-desc">Revisar literatura científica sobre modelos preditivos de abandono de TB.</div>
+        <div class="activity-meta"><span class="meta-tag">Responsável: Vinicius</span><span class="meta-tag">Referências bibliográficas</span></div>
+        <div class="sub-items">
+          <div class="sub-item">Buscar em: PubMed, Google Scholar, SciELO — termos: "tuberculosis treatment adherence prediction ML"</div>
+          <div class="sub-item">Identificar: quais modelos foram usados, quais variáveis, quais métricas</div>
+          <div class="sub-item">Verificar se há estudos com dados do SINAN especificamente</div>
+          <div class="sub-item">Mapear lacunas: o que nosso projeto pode adicionar</div>
+          <div class="sub-item">Organizar referências em formato ABNT (Zotero/Mendeley recomendado)</div>
+        </div>
+      </div>
+      <div class="expand-icon">›</div>
+    </div>
+    <div class="activity-item done" onclick="toggle(this)">
+      <div class="activity-num">1.5</div>
+      <div style="flex:1">
+        <div class="activity-title">Definir o problema como classificação binária</div>
+        <div class="activity-desc">Formalizar a variável-alvo: abandono (1) vs. não abandono (0), com base em SITUA_ENCE.</div>
+        <div class="activity-meta"><span class="meta-tag">Responsável: Gustavo</span><span class="meta-tag">Método do relatório</span></div>
+        <div class="sub-items">
+          <div class="sub-item">Variável-alvo derivada de SITUA_ENCE: valor 6 = abandono (label 1)</div>
+          <div class="sub-item">Definir quais outros valores de SITUA_ENCE compõem o "não abandono" (cura=1, óbito=3, etc.)</div>
+          <div class="sub-item">Discutir: excluir casos sem encerramento (NaN) ou imputar?</div>
+          <div class="sub-item">Documentar decisão com justificativa científica</div>
+        </div>
+      </div>
+      <div class="expand-icon">›</div>
+    </div>
+    <div class="activity-item done" onclick="toggle(this)">
+      <div class="activity-num">1.6</div>
+      <div style="flex:1">
+        <div class="activity-title">Definir hipóteses iniciais de variáveis relevantes</div>
+        <div class="activity-desc">Com base na literatura e no dicionário de dados, levantar quais features provavelmente importam.</div>
+        <div class="activity-meta"><span class="meta-tag">Todos os membros</span><span class="meta-tag">Guia para Macro 2</span></div>
+        <div class="sub-items">
+          <div class="sub-item">Demográficas relevantes: CS_SEXO, ANO_NASC (idade), CS_RACA, CS_ESCOL_N</div>
+          <div class="sub-item">Clínicas: FORMA (pulmonar/extrapulmonar), BACILOSC_E, CULTURA_ES, HIV, TEST_MOLEC</div>
+          <div class="sub-item">Comorbidades: AGRAVAIDS, AGRAVALCOO, AGRAVDROGA, AGRAVDIABE, AGRAVDOENC</div>
+          <div class="sub-item">Sociais: POP_RUA, POP_LIBER, BENEF_GOV, TRAT_SUPER (TDO)</div>
+          <div class="sub-item">Tratamento: TRATAMENTO (esquema), NU_CONTATO, DT_INIC_TR</div>
+        </div>
+      </div>
+      <div class="expand-icon">›</div>
+    </div>
+    <div class="activity-item done" onclick="toggle(this)">
+      <div class="activity-num">1.7</div>
+      <div style="flex:1">
+        <div class="activity-title">Definir impacto prático e dor dos profissionais de saúde</div>
+        <div class="activity-desc">Articular claramente por que a predição é útil no contexto real da saúde pública.</div>
+        <div class="activity-meta"><span class="meta-tag">Responsável: Vinicius</span><span class="meta-tag">Introdução do relatório</span></div>
+        <div class="sub-items">
+          <div class="sub-item">Dor: gestor não sabe quais pacientes monitorar com mais atenção</div>
+          <div class="sub-item">Impacto: intervenções precoces (ligação, visita domiciliar, incentivo) antes do abandono</div>
+          <div class="sub-item">Custo do abandono: reinfecções, tratamentos prolongados, risco de resistência</div>
+          <div class="sub-item">Proposta de valor da aplicação: triagem de risco na admissão do paciente</div>
+        </div>
+      </div>
+      <div class="expand-icon">›</div>
+    </div>
+    <div class="activity-item done" onclick="toggle(this)">
+      <div class="activity-num">1.8</div>
+      <div style="flex:1">
+        <div class="activity-title">Redigir a introdução do relatório científico</div>
+        <div class="activity-desc">Consolidar os pontos acima em texto formal, no padrão ABNT.</div>
+        <div class="activity-meta"><span class="meta-tag">Responsável: Vinicius</span><span class="meta-tag">Entregável: Relatório</span></div>
+        <div class="sub-items">
+          <div class="sub-item">Contextualização: TB no Brasil e no mundo</div>
+          <div class="sub-item">Problema: abandono do tratamento e suas consequências</div>
+          <div class="sub-item">Revisão de literatura: o que já foi feito</div>
+          <div class="sub-item">Lacuna: justificativa do projeto</div>
+          <div class="sub-item">Objetivo: predição de risco de abandono + aplicação prática</div>
+          <div class="sub-item">Estrutura do artigo: breve apresentação das seções</div>
+        </div>
+      </div>
+      <div class="expand-icon">›</div>
+    </div>
+  </div>
+</div>
+
+<!-- MACRO 2 TAB -->
+<div id="tab-macro2" class="panel">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <p class="section-title" style="margin:0">Macro 2 — Aquisição, Compreensão e Estruturação dos Dados</p>
+    <span style="font-size:12px;font-weight:500;color:#1D9E75;">✓ Concluída em 04/05</span>
+  </div>
+  <div class="info-box">Macro 2 concluída. Entregáveis gerados: <strong>docs/fontes_dados.md</strong>, <strong>docs/dicionario_dados.md</strong> (94 variáveis) e <strong>EDA_report.ipynb</strong> (7 seções de análise). Correção crítica identificada: abandono = SITUA_ENCE=2 (não 6).</div>
+  <div class="activity-list">
+    <div class="activity-item done" onclick="toggle(this)">
+      <div class="activity-num">2.1</div>
+      <div style="flex:1">
+        <div class="activity-title">Acessar e carregar os dados do DataSUS/SINAN</div>
+        <div class="activity-desc">Confirmar que o repositório está rodando e que os dados de treino, teste1 e teste2 estão acessíveis.</div>
+        <div class="activity-meta"><span class="meta-tag">Responsável: Gustavo + Membro 3</span><span class="meta-tag">Base para tudo</span></div>
+        <div class="sub-items">
+          <div class="sub-item">Verificar se os arquivos treino.csv, teste1.csv e teste2.csv existem e estão completos</div>
+          <div class="sub-item">Confirmar formato: microdados do TabWin (.dbc → .csv após tratamento)</div>
+          <div class="sub-item">Registrar fonte, data de extração e versão dos dados</div>
+          <div class="sub-item">Criar estrutura de pastas: /data/raw, /data/processed, /data/splits</div>
+          <div class="sub-item">Versionar dados com DVC ou registrar hash dos arquivos no README</div>
+        </div>
+      </div>
+      <div class="expand-icon">›</div>
+    </div>
+    <div class="activity-item done" onclick="toggle(this)">
+      <div class="activity-num">2.2</div>
+      <div style="flex:1">
+        <div class="activity-title">Identificar variáveis e construir dicionário de dados</div>
+        <div class="activity-desc">Mapear todas as 94 colunas da amostra com significado, tipo, valores possíveis e relevância.</div>
+        <div class="activity-meta"><span class="meta-tag">Responsável: Membro 3</span><span class="meta-tag">Entregável: dict_dados.md</span></div>
+        <div class="sub-items">
+          <div class="sub-item">Para cada coluna: nome, descrição, tipo (categórica/numérica/data), valores codificados</div>
+          <div class="sub-item">Consultar documentação oficial do SINAN/TB para decodificação dos campos</div>
+          <div class="sub-item">Identificar variável-alvo: SITUA_ENCE (valor 6 = abandono)</div>
+          <div class="sub-item">Classificar colunas em: relevante, irrelevante, a investigar, excluir (100% nula)</div>
+          <div class="sub-item">Documentar em Markdown — incluir no GitHub como /docs/dicionario_dados.md</div>
+        </div>
+      </div>
+      <div class="expand-icon">›</div>
+    </div>
+    <div class="activity-item done" onclick="toggle(this)">
+      <div class="activity-num">2.3</div>
+      <div style="flex:1">
+        <div class="activity-title">Avaliar qualidade dos dados (missing, inconsistências)</div>
+        <div class="activity-desc">Analisar completude, outliers e inconsistências em cada variável relevante.</div>
+        <div class="activity-meta"><span class="meta-tag">Responsável: Membro 3 + Membro 4</span><span class="meta-tag">Apêndice do relatório</span></div>
+        <div class="sub-items">
+          <div class="sub-item">Calcular % de missings por coluna — 19 colunas são 100% nulas → drop imediato</div>
+          <div class="sub-item">Colunas com &gt;80% nulos: decidir drop vs imputação (ex: BACILOS_E2, EXTRAPU2_N)</div>
+          <div class="sub-item">Verificar NU_IDADE_N: código no formato "4060" = 60 anos (prefixo 4 = anos)</div>
+          <div class="sub-item">Verificar DT_NOTIFIC e DT_DIAG: converter de int para datetime</div>
+          <div class="sub-item">Verificar CS_SEXO: apenas M/F — confirmar ausência de outros valores</div>
+          <div class="sub-item">Verificar valores "9" em categóricas (frequente no SINAN = ignorado/não informado)</div>
+          <div class="sub-item">Documentar todas as anomalias encontradas com evidências (notebook)</div>
+        </div>
+      </div>
+      <div class="expand-icon">›</div>
+    </div>
+    <div class="activity-item done" onclick="toggle(this)">
+      <div class="activity-num">2.4</div>
+      <div style="flex:1">
+        <div class="activity-title">Analisar distribuição das variáveis e variável-alvo</div>
+        <div class="activity-desc">Explorar a distribuição de SITUA_ENCE e verificar balanceamento das classes.</div>
+        <div class="activity-meta"><span class="meta-tag">Responsável: Gustavo + Membro 3</span><span class="meta-tag">EDA — notebook</span></div>
+        <div class="sub-items">
+          <div class="sub-item">SITUA_ENCE: cura(1)=97, abandono(6)=implícito nos dados — verificar codificação exata</div>
+          <div class="sub-item">Calcular proporção abandono vs. não abandono nos dados completos (não apenas amostra)</div>
+          <div class="sub-item">Histogramas das variáveis numéricas (idade, nu_contato)</div>
+          <div class="sub-item">Gráficos de barras para variáveis categóricas (sexo, raça, forma, comorbidades)</div>
+          <div class="sub-item">Tabela de correlação entre variáveis numéricas</div>
+          <div class="sub-item">Análise bivariada: taxa de abandono por grupo (sexo, forma, HIV, etc.)</div>
+        </div>
+      </div>
+      <div class="expand-icon">›</div>
+    </div>
+    <div class="activity-item done" onclick="toggle(this)">
+      <div class="activity-num">2.5</div>
+      <div style="flex:1">
+        <div class="activity-title">Identificar variáveis irrelevantes ou redundantes</div>
+        <div class="activity-desc">Selecionar o subconjunto de features a manter para o pipeline de ML.</div>
+        <div class="activity-meta"><span class="meta-tag">Responsável: Membro 4 + Membro 5</span><span class="meta-tag">Decisão documentada</span></div>
+        <div class="sub-items">
+          <div class="sub-item">Drop imediato: 19 colunas 100% nulas (RIFAMPICIN, ISONIAZIDA, etc.)</div>
+          <div class="sub-item">Drop por irrelevância administrativa: ID_AGRAVO, TP_NOT, NU_ANO, DT_DIGITA, DT_TRANS*</div>
+          <div class="sub-item">Drop por vazamento de informação (data leakage): variáveis que revelam o desfecho</div>
+          <div class="sub-item">Colunas redundantes: SG_UF e SG_UF_NOT, ID_MUNICIP e ID_MN_RESI — manter apenas uma</div>
+          <div class="sub-item">Documentar cada decisão de drop com justificativa técnica</div>
+        </div>
+      </div>
+      <div class="expand-icon">›</div>
+    </div>
+    <div class="activity-item done" onclick="toggle(this)">
+      <div class="activity-num">2.6</div>
+      <div style="flex:1">
+        <div class="activity-title">Documentar insights iniciais da exploração</div>
+        <div class="activity-desc">Registrar descobertas relevantes que guiarão as decisões nas Macros 3 e 4.</div>
+        <div class="activity-meta"><span class="meta-tag">Todos participam</span><span class="meta-tag">Entregável: EDA_report.ipynb</span></div>
+        <div class="sub-items">
+          <div class="sub-item">Notebook de EDA bem documentado com seções claras</div>
+          <div class="sub-item">Hipóteses confirmadas ou refutadas pelos dados</div>
+          <div class="sub-item">Variáveis que parecem mais discriminativas (ex: HIV, POP_RUA, TRAT_SUPER)</div>
+          <div class="sub-item">Alertas para o pipeline: "valor 9 = ignorado", "NU_IDADE_N precisa de conversão"</div>
+          <div class="sub-item">Primeiro rascunho do dicionário com campos relevantes assinalados</div>
+        </div>
+      </div>
+      <div class="expand-icon">›</div>
+    </div>
+  </div>
+</div>
+
+<!-- DATA ANALYSIS TAB -->
+<div id="tab-data" class="panel">
+  <p class="section-title">Análise da Amostra (amostra_2025.xlsx) — 500 registros, 94 colunas</p>
+  <div class="data-grid">
+    <div class="stat-card"><div class="stat-label">Registros</div><div class="stat-value">500</div><div class="stat-sub">Amostra 2025</div></div>
+    <div class="stat-card"><div class="stat-label">Colunas totais</div><div class="stat-value">94</div><div class="stat-sub">variáveis do SINAN</div></div>
+    <div class="stat-card"><div class="stat-label">100% nulas</div><div class="stat-value">19</div><div class="stat-sub">drop imediato</div></div>
+    <div class="stat-card"><div class="stat-label">Sexo M/F</div><div class="stat-value">70/30</div><div class="stat-sub">349M — 151F</div></div>
+  </div>
+
+  <p class="section-title">Variável-alvo — SITUA_ENCE (situação de encerramento)</p>
+  <div class="info-box">A variável-alvo será criada a partir de SITUA_ENCE. Valor 6 = abandono (classe positiva). Atenção: 184 registros (37%) ainda sem encerramento na amostra — serão tratados na divisão treino/teste.</div>
+  <div class="bar-wrap"><div class="bar-label">Cura (1)</div><div class="bar-bg"><div class="bar-fill" style="width:30.7%;background:#1D9E75"></div></div><div class="bar-val">97 (31%)</div></div>
+  <div class="bar-wrap"><div class="bar-label">Abandono (2)</div><div class="bar-bg"><div class="bar-fill" style="width:30.7%;background:#E24B4A"></div></div><div class="bar-val">97 (31%)</div></div>
+  <div class="bar-wrap"><div class="bar-label">Sem encerr.</div><div class="bar-bg"><div class="bar-fill" style="width:58.2%;background:#888780"></div></div><div class="bar-val">184 (37%)</div></div>
+  <div class="bar-wrap"><div class="bar-label">Óbito por TB (5)</div><div class="bar-bg"><div class="bar-fill" style="width:20.3%;background:#BA7517"></div></div><div class="bar-val">64 (20%)</div></div>
+  <div class="bar-wrap"><div class="bar-label">Transferência (3)</div><div class="bar-bg"><div class="bar-fill" style="width:7.3%;background:#7F77DD"></div></div><div class="bar-val">23 (7%)</div></div>
+
+  <p class="section-title" style="margin-top:20px">Qualidade das colunas chave</p>
+  <table class="col-table">
+    <thead><tr><th>Coluna</th><th>Descrição</th><th>% Nulo</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>SITUA_ENCE</td><td>Situação de encerramento (alvo)</td><td>36,8%</td><td><span class="pill pill-warn">Atenção</span></td></tr>
+      <tr><td>CS_SEXO</td><td>Sexo do paciente</td><td>0%</td><td><span class="pill pill-ok">Ok</span></td></tr>
+      <tr><td>NU_IDADE_N</td><td>Idade (código: 4060 = 60a)</td><td>0%</td><td><span class="pill pill-warn">Requer decode</span></td></tr>
+      <tr><td>CS_RACA</td><td>Raça/cor</td><td>1,6%</td><td><span class="pill pill-ok">Ok</span></td></tr>
+      <tr><td>CS_ESCOL_N</td><td>Escolaridade</td><td>8%</td><td><span class="pill pill-ok">Ok</span></td></tr>
+      <tr><td>FORMA</td><td>Forma clínica (1=pulmonar)</td><td>0%</td><td><span class="pill pill-ok">Ok</span></td></tr>
+      <tr><td>HIV</td><td>Resultado HIV</td><td>0%</td><td><span class="pill pill-ok">Ok</span></td></tr>
+      <tr><td>AGRAVAIDS</td><td>Agravo AIDS</td><td>2,8%</td><td><span class="pill pill-ok">Ok</span></td></tr>
+      <tr><td>AGRAVALCOO</td><td>Agravo alcoolismo</td><td>3%</td><td><span class="pill pill-ok">Ok</span></td></tr>
+      <tr><td>AGRAVDROGA</td><td>Agravo uso de drogas</td><td>3,2%</td><td><span class="pill pill-ok">Ok</span></td></tr>
+      <tr><td>POP_RUA</td><td>Pop. em situação de rua</td><td>3,4%</td><td><span class="pill pill-ok">Ok</span></td></tr>
+      <tr><td>TRAT_SUPER</td><td>Tratamento supervisionado (TDO)</td><td>34,4%</td><td><span class="pill pill-warn">Atenção</span></td></tr>
+      <tr><td>BACILOSC_E</td><td>Baciloscopia de escarro</td><td>0%</td><td><span class="pill pill-ok">Ok</span></td></tr>
+      <tr><td>TEST_MOLEC</td><td>Teste molecular (GeneXpert)</td><td>5,8%</td><td><span class="pill pill-ok">Ok</span></td></tr>
+      <tr><td>ID_REGIONA</td><td>Regional de saúde</td><td>38,8%</td><td><span class="pill pill-warn">Atenção</span></td></tr>
+      <tr><td>RIFAMPICIN / ISONIAZIDA</td><td>Medicamentos (vazios)</td><td>100%</td><td><span class="pill pill-bad">Drop</span></td></tr>
+      <tr><td>DT_TRANSRM / CS_FLXRET</td><td>Campos administrativos vazios</td><td>100%</td><td><span class="pill pill-bad">Drop</span></td></tr>
+      <tr><td>BACILOS_E2 / EXTRAPU2_N</td><td>Alta missingness (&gt;99%)</td><td>&gt;99%</td><td><span class="pill pill-drop">Avaliar</span></td></tr>
+    </tbody>
+  </table>
+
+  <p class="section-title" style="margin-top:20px">Principais alertas para o pipeline</p>
+  <div class="alert-box">NU_IDADE_N usa código SINAN: prefixo "4" + idade em anos (ex: 4060 = 60 anos, 4021 = 21 anos). Necessita decodificação antes de usar como numérico.</div>
+  <div class="alert-box">Valores "9" em variáveis categóricas (AGRAVAIDS, CS_GESTANT, etc.) significam "ignorado/não informado" no SINAN — tratar como categoria própria ou imputar, não como valor numérico.</div>
+  <div class="info-box">TRATAMENTO possui 6 categorias: 1=caso novo, 2=recidiva, 3=reingresso após abandono, 4=não sabe, 5=transferência, 6=pós-óbito. O valor 3 pode ser preditor forte de novo abandono.</div>
+</div>
+
+<script>
+function showTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+function toggle(el) {
+  const sub = el.querySelector('.sub-items');
+  const icon = el.querySelector('.expand-icon');
+  if (sub) {
+    sub.classList.toggle('open');
+    icon.textContent = sub.classList.contains('open') ? '˅' : '›';
+  }
+}
+</script>
