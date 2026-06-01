@@ -260,6 +260,43 @@ async function handleFormSubmit(e) {
     }
 }
 
+// ── 4.5 AUTOFILL PRESETS (XAI) ──────────────────────────────────
+function loadPreset(type) {
+    resetForm();
+    
+    // Preenche com os casos extremos do xAI para fácil visualização
+    if (type === 'safe') {
+        document.getElementById('idade_anos').value = 75;
+        document.getElementById('CS_SEXO').value = "M";
+        document.getElementById('TRATAMENTO').value = "1"; // Caso Novo
+        document.getElementById('TRAT_SUPER').value = "1"; // TDO Realizado
+        document.getElementById('AGRAVDIABE').value = "1"; // Diabetes
+    } else if (type === 'warning') {
+        document.getElementById('idade_anos').value = 40;
+        document.getElementById('CS_SEXO').value = "F";
+        document.getElementById('TRATAMENTO').value = "1"; // Caso Novo
+        document.getElementById('TRAT_SUPER').value = "2"; // TDO Não
+        document.getElementById('HIV').value = "1"; // HIV
+        document.getElementById('AGRAVAIDS').value = "1"; // AIDS
+        document.getElementById('AGRAVTABAC').value = "1"; // Tabagismo
+    } else if (type === 'danger') {
+        document.getElementById('idade_anos').value = 22;
+        document.getElementById('CS_SEXO').value = "M";
+        document.getElementById('TRATAMENTO').value = "3"; // Reingresso
+        document.getElementById('TRAT_SUPER').value = "2"; // TDO Não
+        document.getElementById('POP_RUA').value = "1"; // Rua
+        document.getElementById('AGRAVDROGA').value = "1"; // Drogas
+    }
+    
+    // Rola para o formulário
+    document.getElementById('sectionDashboard').scrollIntoView({ behavior: 'smooth' });
+    
+    // Dispara a predição para ser mais mágico/imediato
+    setTimeout(() => {
+        elements.form.dispatchEvent(new Event('submit', { cancelable: true }));
+    }, 600);
+}
+
 // ── 5. RENDERIZAÇÃO DE RESULTADOS NA TELA ───────────────────────
 function renderResults(data) {
     elements.resultCard.className = "card result-card";
