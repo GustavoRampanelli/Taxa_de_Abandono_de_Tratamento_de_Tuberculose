@@ -29,7 +29,8 @@
                 </div>
             </div>
             <nav class="header-nav">
-                <button id="btnDashboard" class="nav-link active">Dashboard</button>
+                <button id="btnInicio" class="nav-link active">Início</button>
+                <button id="btnDashboard" class="nav-link">Dashboard</button>
                 <button id="btnModelo" class="nav-link">O Modelo ML</button>
                 <button id="btnSobre" class="nav-link">Sobre o Projeto</button>
             </nav>
@@ -37,8 +38,30 @@
     </header>
 
     <main class="container app-content">
+        <!-- SEÇÃO: INÍCIO (LANDING PAGE) -->
+        <section id="sectionInicio" class="tab-content active">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <div class="hero-badge">Projeto Acadêmico — Atitus Educação</div>
+                    <h2 class="hero-title">Inteligência Artificial no Combate à Tuberculose</h2>
+                    <p class="hero-description">
+                        A não-adesão ao tratamento da Tuberculose (LTFU - <i>Lost to Follow-Up</i>) é um dos maiores desafios de saúde pública no Brasil. A interrupção prematura do esquema medicamentoso gera resistência bacteriana e compromete a cura.
+                    </p>
+                    <p class="hero-description">
+                        Este sistema preditivo foi desenvolvido para identificar, no momento da notificação no SINAN, quais pacientes apresentam maior risco de abandonar o tratamento. Com essa informação em mãos, os profissionais de saúde podem direcionar recursos, como o Tratamento Diretamente Observado (TDO), para quem mais precisa.
+                    </p>
+                    <div class="hero-actions">
+                        <button id="btnCTA" class="btn btn-primary btn-large">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            Acessar Plataforma de Predição
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- SEÇÃO: DASHBOARD/PREDICTOR -->
-        <section id="sectionDashboard" class="tab-content active">
+        <section id="sectionDashboard" class="tab-content hidden">
             
             <!-- CASOS PRONTOS PARA TESTE RÁPIDO -->
             <div class="quick-cases-container">

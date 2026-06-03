@@ -14,11 +14,13 @@ let ACTIVE_API_URL = API_BASE_URL;
 // ── ELEMENTOS DO DOM ──────────────────────────────────────────
 const elements = {
     // Abas / Navegação
+    btnInicio: document.getElementById("btnInicio"),
     btnDashboard: document.getElementById("btnDashboard"),
     btnModelo: document.getElementById("btnModelo"),
     btnSobre: document.getElementById("btnSobre"),
     
     sections: {
+        Inicio: document.getElementById("sectionInicio"),
         Dashboard: document.getElementById("sectionDashboard"),
         Modelo: document.getElementById("sectionModelo"),
         Sobre: document.getElementById("sectionSobre")
@@ -55,7 +57,7 @@ const elements = {
 
 // ── 1. DIRECIONAMENTO E INICIALIZAÇÃO DE NAVEGAÇÃO ─────────────
 function initNavigation() {
-    const tabs = ["Dashboard", "Modelo", "Sobre"];
+    const tabs = ["Inicio", "Dashboard", "Modelo", "Sobre"];
 
     tabs.forEach(tab => {
         elements[`btn${tab}`].addEventListener("click", () => {
@@ -76,6 +78,14 @@ function initNavigation() {
             window.scrollTo({ top: 0, behavior: "smooth" });
         });
     });
+
+    // Botão CTA da Landing Page (Acessar Plataforma)
+    const btnCTA = document.getElementById("btnCTA");
+    if (btnCTA) {
+        btnCTA.addEventListener("click", () => {
+            elements.btnDashboard.click();
+        });
+    }
 }
 
 // ── 2. MONITORAMENTO DE STATUS DA API ─────────────────────────
