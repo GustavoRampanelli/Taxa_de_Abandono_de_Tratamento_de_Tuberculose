@@ -1155,8 +1155,9 @@ body {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
     text-align: center;
-    background-image: radial-gradient(circle at top right, var(--color-brand-light), transparent 50%),
-                      radial-gradient(circle at bottom left, #f0fdfa, transparent 50%);
+    background-image: linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.96)), url('../images/bg_tuberculose.jpg');
+    background-size: cover;
+    background-position: center;
 }
 
 .hero-content {
