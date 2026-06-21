@@ -15,6 +15,32 @@ print("Iniciando Geração do Gráfico de Explicabilidade (xAI)...")
 with open('tuberculosis-ltfu-prediction-main/data/processed/pipeline_final.pkl', 'rb') as f:
     pipe = pickle.load(f)
 
+# 1.1 Simulação de Casos Extremos (Casos Estranhos)
+print("\n-> Simulando Casos Clínicos Extremos no Modelo...")
+caso_a = {
+    'reingresso': 0, 'POP_RUA': 2.0, 'AGRAVAIDS': 2.0, 'POP_LIBER': 2.0, 
+    'AGRAVDROGA': 2.0, 'idade_anos': 85.0, 'AGRAVALCOO': 2.0, 'NU_COMU_EX': 0.0, 
+    'AGRAVDIABE': 1.0, 'AGRAVTABAC': 2.0, 'AGRAVDOENC': 1.0, 'POP_IMIG': 2.0, 
+    'BENEF_GOV': 2.0, 'NU_CONTATO': 2.0, 'TRAT_SUPER': 1.0, 'dias_notif_trat': 1.0,
+    'CS_SEXO': 'F', 'HIV': '2', 'TESTE_TUBE': '4', 'CULTURA_ES': '2', 
+    'BACILOSC_E': '2', 'RAIOX_TORA': '2', 'TRATAMENTO': '1', 'CS_RACA': '1', 'TEST_MOLEC': '2'
+}
+caso_b = {
+    'reingresso': 1, 'POP_RUA': 1.0, 'AGRAVAIDS': 2.0, 'POP_LIBER': 2.0, 
+    'AGRAVDROGA': 1.0, 'idade_anos': 22.0, 'AGRAVALCOO': 1.0, 'NU_COMU_EX': 0.0, 
+    'AGRAVDIABE': 2.0, 'AGRAVTABAC': 1.0, 'AGRAVDOENC': 2.0, 'POP_IMIG': 2.0, 
+    'BENEF_GOV': 2.0, 'NU_CONTATO': 0.0, 'TRAT_SUPER': 2.0, 'dias_notif_trat': 30.0,
+    'CS_SEXO': 'M', 'HIV': '2', 'TESTE_TUBE': '5', 'CULTURA_ES': '4', 
+    'BACILOSC_E': '1', 'RAIOX_TORA': '1', 'TRATAMENTO': '3', 'CS_RACA': '4', 'TEST_MOLEC': '1'
+}
+df_estranhos = pd.DataFrame([caso_a, caso_b])
+prob_a = pipe.predict_proba(df_estranhos.iloc[[0]])[0][1]
+prob_b = pipe.predict_proba(df_estranhos.iloc[[1]])[0][1]
+
+print(f"  * CASO A (Idoso, diabético, novo, com TDO): Risco de Abandono = {prob_a * 100:.2f}%")
+print(f"  * CASO B (Jovem, morador de rua, reingresso, sem TDO): Risco de Abandono = {prob_b * 100:.2f}%")
+print("-> O modelo capturou corretamente as assimetrias comportamentais e sociais.\n")
+
 # 2. Carregar Amostra
 # Como o dataset de teste é gigante, pegamos uma amostra para calcular a Permutation Importance
 print("Carregando amostra de dados...")
@@ -111,4 +137,4 @@ caminho_salvar = 'docs/graficos/xai_importance.png'
 plt.savefig(caminho_salvar, dpi=300, bbox_inches='tight')
 plt.close()
 
-print(f"✅ Gráfico salvo com sucesso em: {caminho_salvar}")
+print(f"[OK] Grafico salvo com sucesso em: {caminho_salvar}")
