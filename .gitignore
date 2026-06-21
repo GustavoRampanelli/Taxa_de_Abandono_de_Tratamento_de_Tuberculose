@@ -1,7 +1,8 @@
-
 tuberculosis-ltgu-prediction/
 *.pdf
 *.csv
 *.feather
 *.dbc
 *.pkl
+__pycache__/
+*.pyc
