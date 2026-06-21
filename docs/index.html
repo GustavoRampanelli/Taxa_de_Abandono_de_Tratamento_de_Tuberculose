@@ -480,15 +480,16 @@
                         </div>
                     </div>
 
-                    <div class="variables-section">
-                        <h3>Pesos Globais das Variáveis (Lasso / LightGBM)</h3>
-                        <p>Principais preditores que norteiam a tomada de decisão do algoritmo, por ordem de relevância estatística:</p>
-                        <div class="variable-bars">
-                            <div class="bar-group"><span class="bar-name">Reingresso pós-abandono anterior (TRATAMENTO=3)</span><div class="bar-track"><div class="bar-fill" style="width: 100%;"></div></div><span class="bar-val">Fator Crítico (Coef. 1.23)</span></div>
-                            <div class="bar-group"><span class="bar-name">População em Situação de Rua (POP_RUA)</span><div class="bar-track"><div class="bar-fill" style="style: width: 85%;"></div></div><span class="bar-val">Fator Elevado (Coef. 1.03)</span></div>
-                            <div class="bar-group"><span class="bar-name">Coinfecção por HIV/AIDS (AGRAVAIDS)</span><div class="bar-track"><div class="bar-fill" style="width: 65%;"></div></div><span class="bar-val">Fator Alto (Coef. 0.69)</span></div>
-                            <div class="bar-group"><span class="bar-name">Uso de Drogas Ilícitas (AGRAVDROGA)</span><div class="bar-track"><div class="bar-fill" style="width: 58%;"></div></div><span class="bar-val">Moderado (Coef. 0.57)</span></div>
-                            <div class="bar-group"><span class="bar-name">Idade Jovem (menor idade, idade_anos)</span><div class="bar-track"><div class="bar-fill" style="width: 53%;"></div></div><span class="bar-val">Moderado (Coef. 0.52)</span></div>
+                    <div class="variables-section" style="margin-top: 40px; border-top: 1px solid var(--color-border); padding-top: 40px;">
+                        <h3 style="font-size: 24px; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-brand)"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                            Por Dentro da Caixa Preta (xAI)
+                        </h3>
+                        <p style="font-size: 16px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6;">Para garantir a confiabilidade clínica, aplicamos a técnica <strong>Permutation Importance</strong>, que revela quais fatores clínicos e sociais o algoritmo considera mais determinantes ao classificar o risco de abandono de um paciente.</p>
+                        
+                        <div class="xai-image-container" style="background-color: #f8fafc; padding: 24px; border-radius: 12px; border: 1px solid var(--color-border); text-align: center;">
+                            <img src="graficos/xai_importance.png" alt="Gráfico de Explicabilidade (Permutation Importance)" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: var(--shadow-sm);">
+                            <p style="font-size: 13px; color: var(--text-muted); margin-top: 16px; font-style: italic;">Quanto maior a barra, maior o peso matemático da variável na decisão de predição.</p>
                         </div>
                     </div>
                 </div>
