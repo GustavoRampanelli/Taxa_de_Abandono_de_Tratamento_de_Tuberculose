@@ -1,0 +1,7 @@
+
+tuberculosis-ltgu-prediction/
+*.pdf
+*.csv
+*.feather
+*.dbc
+*.pkl
