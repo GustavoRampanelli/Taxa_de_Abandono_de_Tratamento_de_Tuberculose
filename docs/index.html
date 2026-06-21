@@ -32,7 +32,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h1 class="app-title">PrevTB <span class="badge">LTFU-Predict</span></h1>
+                    <h1 class="app-title">PrevTB <span class="badge">Predição de Abandono</span></h1>
                     <p class="app-subtitle">Sistema Inteligente de Suporte à Decisão Clínica</p>
                 </div>
             </div>
@@ -582,15 +582,12 @@
                                 médico por "falso otimismo".</p>
                         </div>
                         <div class="data-origin-card">
-                            <h3>Origem dos Dados & Treinamento</h3>
+                            <h3>Origem dos Dados &amp; Treinamento</h3>
                             <ul>
-                                <li><strong>Dataset Utilizado:</strong> 562.632 notificações reais do SINAN-TB.</li>
-                                <li><strong>Target de Classificação:</strong> Abandono do Tratamento (Situação de
-                                    encerramento = '2').</li>
-                                <li><strong>Tratamento de Desbalanceamento:</strong> Otimização via ajuste de pesos de
-                                    classe (scale_pos_weight = 4.1).</li>
-                                <li><strong>Algoritmo Final:</strong> LightGBM (Light Gradient Boosting Machine) com
-                                    pré-processamento robusto de dados ausentes.</li>
+                                <li><strong>Base de Dados:</strong> 562.632 notificações reais do SINAN-TB (Sistema de Informação de Agravos de Notificação), cobrindo o período de 2009 a 2022.</li>
+                                <li><strong>Objetivo do Modelo:</strong> Identificar, no ato de notificação, pacientes com alto risco de abandonar o tratamento antes da cura (6 meses).</li>
+                                <li><strong>Correção de Viés:</strong> Como casos de abandono são minoria (~10%), aplicamos um peso matemático automático que faz o algoritmo prestar quatro vezes mais atenção a eles, reduzindo erros de "falso otimismo".</li>
+                                <li><strong>Algoritmo:</strong> LightGBM — modelo de Gradient Boosting de alto desempenho, amplamente utilizado em competições de dados e sistemas de saúde em produção.</li>
                             </ul>
                         </div>
                     </div>
@@ -656,16 +653,16 @@
                                     <span>Modelagem de ML, Infraestrutura e API Backend</span>
                                 </li>
                                 <li>
-                                    <strong>vinicius GEHRING capeLlari</strong>
+                                    <strong>Vinicius Gehring Capellari</strong>
                                     <span>Líder do Projeto, Documentação Científica e Métricas</span>
                                 </li>
                                 <li>
-                                    <strong>victor Quadri</strong>
+                                    <strong>Victor Quadri</strong>
                                     <span>Validação e Engenharia de Features Clínicas</span>
                                 </li>
                                 <li>
-                                    <strong>João vitor burati</strong>
-                                    <span>Estatística Multivariada & Validação SINAN</span>
+                                    <strong>João Vitor Burati</strong>
+                                    <span>Estatística Multivariada &amp; Validação SINAN</span>
                                 </li>
                                 <li>
                                     <strong>Laura Cemin Iora</strong>
