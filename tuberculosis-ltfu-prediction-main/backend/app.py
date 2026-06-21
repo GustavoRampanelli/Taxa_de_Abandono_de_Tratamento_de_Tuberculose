@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from typing import Optional
 import uvicorn
@@ -261,6 +262,10 @@ def predict(paciente: PacienteInput):
         recomendacao=rec,
         aviso="Esta predição é uma ferramenta de apoio clínico baseada em dados populacionais. Não substitui avaliação médica individualizada."
     )
+
+
+# ── Servir frontend estático ───────────────────────────────
+app.mount("/", StaticFiles(directory=os.path.join(os.path.dirname(__file__), "..", "..", "docs"), html=True), name="static")
 
 
 # ── Execução local ──────────────────────────────────────────

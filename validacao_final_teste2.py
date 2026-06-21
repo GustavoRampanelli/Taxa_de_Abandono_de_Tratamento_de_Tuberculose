@@ -121,7 +121,7 @@ meta = {
     'prop_abandono_treino': round(float(tr_full['ltfu'].mean()), 4),
     'scale_pos_weight': ratio
 }
-with open(f'{OUT_DIR}/model_metadata.json', 'w') as f:
+with open(f'{OUT_DIR}/model_metadata.json', 'w', encoding='utf-8') as f:
     json.dump(meta, f, indent=2, ensure_ascii=False)
 
 print("\nDeploy Local Concluído! Arquivos 'pipeline_final.pkl' e 'model_metadata.json' atualizados para a nova versão robusta.")
