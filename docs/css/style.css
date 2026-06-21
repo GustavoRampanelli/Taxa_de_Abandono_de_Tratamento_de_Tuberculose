@@ -1143,7 +1143,6 @@ body {
     display: none !important;
 }
 
-/* ── 7. LANDING PAGE (HERO SECTION) ───────────────────────────── */
 .hero-container {
     display: flex;
     justify-content: center;
@@ -1156,7 +1155,8 @@ body {
     box-shadow: var(--shadow-sm);
     text-align: center;
     background-image: linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.96)), url('../images/bg_tuberculose.jpg');
-    background-size: cover;
+    background-size: 800px; /* Reduzindo o tamanho da imagem para caber melhor */
+    background-repeat: no-repeat;
     background-position: center;
 }
 
