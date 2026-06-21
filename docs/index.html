@@ -455,19 +455,22 @@
                             <h3>Acurácia do Modelo</h3>
                             <div class="metrics-row">
                                 <div class="metric-block">
-                                    <span class="metric-val">0.826</span>
-                                    <span class="metric-lbl">ROC-AUC (Área sob Curva ROC)</span>
+                                    <span class="metric-val" style="color: var(--color-brand)">85.9%</span>
+                                    <span class="metric-lbl" style="font-weight: 600; color: #1e293b;">Capacidade Global de Acerto</span>
+                                    <span class="metric-lbl" style="font-size: 11px; margin-top: 4px;">(Métrica técnica: ROC-AUC = 0.859)</span>
                                 </div>
                                 <div class="metric-block">
-                                    <span class="metric-val">72.6%</span>
-                                    <span class="metric-lbl">F1-Score</span>
+                                    <span class="metric-val" style="color: var(--color-brand)">86.5%</span>
+                                    <span class="metric-lbl" style="font-weight: 600; color: #1e293b;">Equilíbrio e Precisão</span>
+                                    <span class="metric-lbl" style="font-size: 11px; margin-top: 4px;">(Métrica técnica: F1-Score = 0.865)</span>
                                 </div>
                                 <div class="metric-block">
-                                    <span class="metric-val">87.0%</span>
-                                    <span class="metric-lbl">Sensibilidade (Recall) para Abandono</span>
+                                    <span class="metric-val" style="color: var(--color-brand)">88.0%</span>
+                                    <span class="metric-lbl" style="font-weight: 600; color: #1e293b;">Captura de Pacientes em Risco</span>
+                                    <span class="metric-lbl" style="font-size: 11px; margin-top: 4px;">(Métrica técnica: Sensibilidade / Recall)</span>
                                 </div>
                             </div>
-                            <p class="metric-desc">O modelo prioriza o <strong>Recall (Sensibilidade)</strong>. Isso reduz drasticamente a chance de "Falso Negativo" (paciente classificado como baixo risco que abandona o tratamento), oferecendo maior segurança clínica.</p>
+                            <p class="metric-desc">O modelo é altamente treinado para focar na <strong>Captura de Pacientes em Risco (Sensibilidade)</strong>. Isso significa que, a cada 100 pacientes que de fato abandonariam o tratamento, o nosso sistema consegue alertar a equipe médica sobre 88 deles antecipadamente. Isso reduz drasticamente a chance de erro médico por "falso otimismo".</p>
                         </div>
                         <div class="data-origin-card">
                             <h3>Origem dos Dados & Treinamento</h3>
