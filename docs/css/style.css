@@ -1154,9 +1154,8 @@ body {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
     text-align: center;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.96)), url('../images/bg_tuberculose.jpg');
-    background-size: 800px; /* Reduzindo o tamanho da imagem para caber melhor */
-    background-repeat: no-repeat;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.96)), url('../images/bg_tuberculose.png');
+    background-size: cover;
     background-position: center;
 }
 
