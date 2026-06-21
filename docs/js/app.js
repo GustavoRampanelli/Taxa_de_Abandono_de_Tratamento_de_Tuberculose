@@ -13,18 +13,8 @@ let ACTIVE_API_URL = API_BASE_URL;
 
 // ── ELEMENTOS DO DOM ──────────────────────────────────────────
 const elements = {
-    // Abas / Navegação
-    btnInicio: document.getElementById("btnInicio"),
-    btnDashboard: document.getElementById("btnDashboard"),
-    btnModelo: document.getElementById("btnModelo"),
-    btnSobre: document.getElementById("btnSobre"),
-    
-    sections: {
-        Inicio: document.getElementById("sectionInicio"),
-        Dashboard: document.getElementById("sectionDashboard"),
-        Modelo: document.getElementById("sectionModelo"),
-        Sobre: document.getElementById("sectionSobre")
-    },
+    // Nav links
+    navLinks: document.querySelectorAll(".nav-link[data-section]"),
 
     // Formulário
     form: document.getElementById("ltfuForm"),
@@ -55,27 +45,37 @@ const elements = {
     apiStatusIndicator: document.getElementById("apiStatusIndicator")
 };
 
-// ── 1. DIRECIONAMENTO E INICIALIZAÇÃO DE NAVEGAÇÃO ─────────────
+// ── 1. NAVEGAÇÃO POR SCROLL (IntersectionObserver) ────────────
 function initNavigation() {
-    const tabs = ["Inicio", "Dashboard", "Modelo", "Sobre"];
+    const sections = document.querySelectorAll(".scroll-section");
+    const navLinks = elements.navLinks;
 
-    tabs.forEach(tab => {
-        elements[`btn${tab}`].addEventListener("click", () => {
-            // Remover active de todos os botões
-            tabs.forEach(t => elements[`btn${t}`].classList.remove("active"));
-            // Ocultar todas as seções
-            tabs.forEach(t => {
-                elements.sections[t].classList.add("hidden");
-                elements.sections[t].classList.remove("active");
-            });
+    // IntersectionObserver: destaca o link correspondente à seção visível
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.id;
+                navLinks.forEach(link => {
+                    link.classList.toggle("active", link.dataset.section === id);
+                });
+            }
+        });
+    }, {
+        rootMargin: "-30% 0px -60% 0px", // Ativa quando a seção ocupa a parte de cima da tela
+        threshold: 0
+    });
 
-            // Ativar a aba clicada
-            elements[`btn${tab}`].classList.add("active");
-            elements.sections[tab].classList.remove("hidden");
-            elements.sections[tab].classList.add("active");
+    sections.forEach(section => observer.observe(section));
 
-            // Scroll suave para o topo
-            window.scrollTo({ top: 0, behavior: "smooth" });
+    // Clique nos links: smooth scroll com offset correto
+    navLinks.forEach(link => {
+        link.addEventListener("click", (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute("href").replace("#", "");
+            const target = document.getElementById(targetId);
+            if (target) {
+                target.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
         });
     });
 
@@ -83,7 +83,8 @@ function initNavigation() {
     const btnCTA = document.getElementById("btnCTA");
     if (btnCTA) {
         btnCTA.addEventListener("click", () => {
-            elements.btnDashboard.click();
+            const dashboard = document.getElementById("sectionDashboard");
+            if (dashboard) dashboard.scrollIntoView({ behavior: "smooth", block: "start" });
         });
     }
 }
